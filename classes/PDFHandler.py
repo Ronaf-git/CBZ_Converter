@@ -2,6 +2,8 @@ import os
 import zipfile
 import fitz  # PyMuPDF
 from .ComicBookHandler import *
+import subprocess
+import re
 
 class PDFHandler(ComicBookHandler):
     def __init__(self, input_file):
@@ -14,6 +16,34 @@ class PDFHandler(ComicBookHandler):
         
         # Call parent constructor
         super().__init__(input_file)
+
+    def update_pdf_metadata(self):
+        input_file = self.input_file
+        # Step 1: Get the folder where the PDF is located
+        folder = os.path.basename(os.path.dirname(input_file))
+        
+        # Step 2: Extract the first numerical value from the PDF filename
+        filename = os.path.basename(input_file)
+        series_index = re.search(r'\d+', filename)
+        
+        if series_index:
+            series_index = series_index.group(0)  # Get the first numerical value
+        else:
+            logger.info(f"No numerical value found in the filename: {filename}")
+            return
+        
+        # Step 3: Update metadata using Calibre's ebook-meta command
+        command = [
+            'ebook-meta', input_file,  # Command and the file path
+            '--series', folder,
+            '--index', series_index,  # Set the series index as the title (optional)
+        ]
+        try:
+            # Execute the command
+            subprocess.run(command, check=True)
+            logger.info(f"Metadata updated successfully for: {filename}")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error updating metadata for {filename}: {e}")
 
     def convert_to_cbz(self, output_cbz_path=None):
         """Convert PDF to CBZ."""
