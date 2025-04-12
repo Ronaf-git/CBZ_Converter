@@ -1,4 +1,4 @@
-
+from functions.logging_config import logger  # Import the logger from logger_config
 import os
 from classes import *
 

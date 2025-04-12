@@ -1,7 +1,6 @@
 import os
 import tempfile
-from functions.logging_config import setup_logger  
-logger = setup_logger(__name__)
+from functions.logging_config import logger  # Import the logger from logger_config
 
 class ComicBookHandler:
     def __init__(self, input_file, output_folder=None):

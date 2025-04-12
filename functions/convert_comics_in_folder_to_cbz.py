@@ -1,5 +1,6 @@
 import os
 from classes import *
+from functions.logging_config import logger  # Import the logger from logger_config
 
 # Single function to process CBR, EPUB, and PDF files in a folder
 def convert_comics_in_folder_to_cbz(root_folder):
